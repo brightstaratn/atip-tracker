@@ -1,0 +1,81 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">My ATIP Requests</h1>
+            
+            <!-- Status Filter -->
+            <div class="mb-3">
+                <form method="get" class="row g-3 align-items-center">
+                    <div class="col-auto">
+                        <label class="form-label">Filter by Status:</label>
+                    </div>
+                    <div class="col-auto">
+                        <select name="status" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Statuses</option>
+                            {% for status_value, status_display in statuses %}
+                                <option value="{{ status_value }}">{{ status_display }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Request Number</th>
+                                <th>Institution</th>
+                                <th>Submitted Date</th>
+                                <th>Status</th>
+                                <th>Response Due</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for request in requests %}
+                            <tr>
+                                <td>{{ request.request_number }}</td>
+                                <td>{{ request.institution }}</td>
+                                <td>{{ request.date_submitted }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if request.status == 'DRAFT' %}bg-secondary
+                                        {% elif request.status == 'SUBMITTED' %}bg-primary
+                                        {% elif request.status == 'RECEIVED' %}bg-success
+                                        {% elif request.status == 'REJECTED' %}bg-danger
+                                        {% elif request.status == 'APPEALED' %}bg-warning
+                                        {% else %}bg-info
+                                        {% endif %}">
+                                        {{ request.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ request.response_due_date|default:"N/A" }}</td>
+                                <td>
+                                    <a href="{% url 'request_detail' request.id %}" class="btn btn-sm btn-info">
+                                        View Details
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">
+                                    No ATIP requests found. 
+                                    <a href="{% url 'create_request' %}" class="btn btn-sm btn-primary">
+                                        Create Your First Request
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
