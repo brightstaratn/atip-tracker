@@ -12,6 +12,16 @@ db.sqlite3
 # Static files
 staticfiles/
 
+# Media files
+media/
+
 # IDE settings
 .vscode/
 .idea/
+
+# Deployment files
+build.sh
+
+# Miscellaneous
+*.log
+*.pot
